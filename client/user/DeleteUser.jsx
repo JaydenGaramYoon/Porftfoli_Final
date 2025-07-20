@@ -17,6 +17,10 @@ export default function DeleteUser({ userId }) {
   const [redirect, setRedirect] = useState(false);
 
   const jwt = auth.isAuthenticated();
+  
+  // 권한 체크: 본인의 계정이거나 admin 권한이 있어야 함
+  const canDelete = jwt && (jwt.user._id === userId || jwt.user.admin);
+  const isDeletingOwnAccount = jwt && jwt.user._id === userId;
 
   const clickButton = () => {
     setOpen(true);
@@ -27,7 +31,10 @@ export default function DeleteUser({ userId }) {
       if (data?.error) {
         console.error(data.error);
       } else {
-        auth.clearJWT(() => console.log("deleted"));
+        // 자신의 계정을 삭제한 경우에만 JWT 클리어
+        if (isDeletingOwnAccount) {
+          auth.clearJWT(() => console.log("deleted"));
+        }
         setRedirect(true);
       }
     });
@@ -38,7 +45,13 @@ export default function DeleteUser({ userId }) {
   };
 
   if (redirect) {
-    return <Navigate to="/" />;
+    // 자신의 계정을 삭제한 경우 홈으로, 다른 사용자를 삭제한 경우 사용자 목록으로
+    return <Navigate to={isDeletingOwnAccount ? "/" : "/users"} />;
+  }
+
+  // 권한이 없으면 아무것도 렌더링하지 않음
+  if (!canDelete) {
+    return null;
   }
 
   return (
@@ -52,11 +65,15 @@ export default function DeleteUser({ userId }) {
       </IconButton>
 
       <Dialog open={open} onClose={handleRequestClose}>
-        <DialogTitle>Delete Account</DialogTitle>
+        <DialogTitle>
+          {isDeletingOwnAccount ? "Delete Your Account" : "Delete User Account"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to delete your account? This action is
-            irreversible.
+            {isDeletingOwnAccount 
+              ? "Are you sure you want to delete your account? This action is irreversible and you will be logged out."
+              : "Are you sure you want to delete this user's account? This action is irreversible."
+            }
           </DialogContentText>
         </DialogContent>
         <DialogActions>

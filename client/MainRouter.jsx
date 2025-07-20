@@ -40,18 +40,18 @@ function MainRouter() {
         <Route
           path="/user/edit/:userId"
           element={
-            <AdminRoute>
+            <PrivateRoute>
               <EditProfile />
-            </AdminRoute>
+            </PrivateRoute>
           }
         />
 
         <Route
           path="/user/delete/:userId"
           element={
-            <AdminRoute>
+            <PrivateRoute>
               <DeleteUser />
-            </AdminRoute>
+            </PrivateRoute>
           }
         />
         

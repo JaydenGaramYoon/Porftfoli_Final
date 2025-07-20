@@ -58,6 +58,32 @@ const hasAuthorization = (req, res, next) => {
   next();
 };
 
+const hasAuthorizationOrAdmin = async (req, res, next) => {
+  try {
+    // 본인인지 확인
+    const isOwner = req.profile && req.auth && req.profile._id == req.auth._id;
+    
+    if (isOwner) {
+      return next();
+    }
+    
+    // 본인이 아니면 admin 권한 확인
+    let user = await User.findById(req.auth._id);
+    if (!user || !user.admin) {
+      return res.status(403).json({
+        error: "User is not authorized",
+      });
+    }
+    
+    next();
+  } catch (err) {
+    console.log('hasAuthorizationOrAdmin error:', err);
+    return res.status(403).json({
+      error: "Authorization check failed",
+    });
+  }
+};
+
 const requireAdmin = async (req, res, next) => {
   try {
     console.log('requireAdmin: req.auth._id =', req.auth._id);
@@ -79,4 +105,4 @@ const requireAdmin = async (req, res, next) => {
   }
 };
 
-export default { signin, signout, requireSignin, hasAuthorization, requireAdmin };
+export default { signin, signout, requireSignin, hasAuthorization, hasAuthorizationOrAdmin, requireAdmin };

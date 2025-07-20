@@ -230,17 +230,25 @@ export default function Profile() {
         
         <Divider />
         
-        {/* Edit/Delete 버튼 - admin이 true일 때만 보임 */}
-        {auth.isAuthenticated().user && 
-         auth.isAuthenticated().user.admin && (
+        {/* Edit/Delete 버튼 - 본인 프로필이거나 admin일 때 보임 */}
+        {auth.isAuthenticated().user && (
           <ListItem>
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <Link to={`/user/edit/${user._id}`}>
-                <IconButton aria-label="Edit" color="primary">
-                  <EditIcon />
-                </IconButton>
-              </Link>
-              <DeleteUser userId={user._id} />
+              {/* Edit 버튼 - 본인 프로필이거나 admin일 때 보임 */}
+              {(auth.isAuthenticated().user._id === user._id || 
+                auth.isAuthenticated().user.admin) && (
+                <Link to={`/user/edit/${user._id}`}>
+                  <IconButton aria-label="Edit" color="primary">
+                    <EditIcon />
+                  </IconButton>
+                </Link>
+              )}
+              
+              {/* Delete 버튼 - 본인 프로필이거나 admin일 때 보임 */}
+              {(auth.isAuthenticated().user._id === user._id || 
+                auth.isAuthenticated().user.admin) && (
+                <DeleteUser userId={user._id} />
+              )}
             </Box>
           </ListItem>
         )}
