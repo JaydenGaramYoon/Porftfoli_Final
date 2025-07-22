@@ -211,9 +211,9 @@ export default function Profile() {
         
         <Divider />
         
-        {/* Admin Toggle - 본인 프로필에서만 보임 */}
+        {/* Admin Toggle - admin 권한이 있는 사용자만 표시 */}
         {auth.isAuthenticated().user &&
-          auth.isAuthenticated().user._id === user._id && (
+          auth.isAuthenticated().user.admin && (
             <ListItem>
               <FormControlLabel
                 control={

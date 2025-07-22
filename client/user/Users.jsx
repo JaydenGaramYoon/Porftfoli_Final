@@ -13,16 +13,21 @@ import {
 } from "@mui/material";
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import { list } from "./api-user.js";
+import auth from "../lib/auth-helper.js";
 import { Link as RouterLink } from "react-router-dom";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const jwt = auth.isAuthenticated();
 
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
 
-    list(signal).then((data) => {
+    setLoading(true);
+
+    list({ t: jwt.token }, signal).then((data) => {
       if (data?.error) {
         console.log(data.error);
       } else {
@@ -33,6 +38,8 @@ export default function Users() {
       if (err.name !== 'AbortError') {
         console.error('Failed to fetch users:', err);
       }
+    }).finally(() => {
+      setLoading(false);
     });
 
     return () => abortController.abort();
@@ -60,34 +67,43 @@ export default function Users() {
         Users
       </Typography>
       <List dense>
-        {users.map((item, i) => (
-          <Link
-            component={RouterLink}
-            to={`/user/${item._id}`}
-            underline="none"
-            key={item._id}
-            sx={{ color: "inherit" }}
-          >
-            <ListItem 
-              sx={{ 
-                cursor: 'pointer',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)'
-                }
-              }}
+        {users.length === 0 ? (
+          <ListItem>
+            <ListItemText 
+              primary="Loading users..." 
+              sx={{ textAlign: 'center', color: 'text.secondary' }}
+            />
+          </ListItem>
+        ) : (
+          users.map((item, i) => (
+            <Link
+              component={RouterLink}
+              to={`/user/${item._id}`}
+              underline="none"
+              key={item._id}
+              sx={{ color: "inherit" }}
             >
-              <ListItemAvatar>
-                <Avatar />
-              </ListItemAvatar>
-              <ListItemText primary={item.name} />
-              <ListItemSecondaryAction>
-                <IconButton edge="end">
-                  <ArrowForward />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          </Link>
-        ))}
+              <ListItem 
+                sx={{ 
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                  }
+                }}
+              >
+                <ListItemAvatar>
+                  <Avatar />
+                </ListItemAvatar>
+                <ListItemText primary={item.name} />
+                <ListItemSecondaryAction>
+                  <IconButton edge="end">
+                    <ArrowForward />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            </Link>
+          ))
+        )}
       </List>
     </Paper>
   );

@@ -204,8 +204,8 @@ export default function EditProfile() {
           sx={{ mx: 1, width: 300 }}
         />
 
-        {/* Admin 스위치는 본인 프로필일 때 항상 표시, 다른 사용자 프로필은 admin만 표시 */}
-        {(jwt.user._id === userId || jwt.user.admin) && (
+        {/* Admin 스위치는 admin 권한이 있는 사용자만 표시 */}
+        {jwt.user.admin && (
           <>
             <Typography variant="subtitle1" sx={{ mt: 2, fontWeight: 500 }}>
               Admin Status

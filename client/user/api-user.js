@@ -35,10 +35,14 @@ const create = async (user) => {
   }
 };
 
-const list = async (signal) => {
+const list = async ({ t }, signal) => {
   try {
     const response = await fetch(API_BASE, {
       method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + t,
+      },
       signal,
     });
     return await handleResponse(response);
