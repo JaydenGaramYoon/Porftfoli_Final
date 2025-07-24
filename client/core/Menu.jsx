@@ -7,7 +7,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import Button from "@mui/material/Button";
 import auth from "../lib/auth-helper";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import customLogo from "../assets/images/custom-logo.png"; // Adjust the path as necessary
+
 
 const isActive = (location, path) =>
   location.pathname === path ? "#3eb96bff" : "#000000";
@@ -27,7 +27,7 @@ export default function Menu() {
             transition: 'transform 0.2s ease',
           }}>
             <img 
-              src={customLogo} 
+              src={"/custom-logo.png"} 
               alt="Logo" 
               style={{ 
                 borderRadius: "50px", 

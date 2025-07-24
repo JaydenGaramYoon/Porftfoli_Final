@@ -54,81 +54,99 @@ const Projects = () => {
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-    setProjectForm(prev => ({
+    setProjectForm((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = () => {
     const currentJwt = auth.isAuthenticated(); // 최신 JWT 토큰 가져오기
-    
+
     // 필수 필드 검증
     if (!projectForm.title.trim()) {
-      alert('Project title is required');
+      alert("Project title is required");
       return;
     }
     if (!projectForm.image.trim()) {
-      alert('Project image URL is required');
+      alert("Project image URL is required");
       return;
     }
-    // 이미지 URL 형식 검증
-    if (!projectForm.image.startsWith('http://') && !projectForm.image.startsWith('https://')) {
-      alert('Please provide a valid image URL (starting with http:// or https://)');
+    // 이미지 URL 형식 검증 (http, https, 또는 /로 시작하는 경로 허용)
+    if (
+      !projectForm.image.startsWith("http://") &&
+      !projectForm.image.startsWith("https://") &&
+      !projectForm.image.startsWith("/")
+    ) {
+      console.log("Invalid image URL:", projectForm.image); // 디버그 로그 추가
+      alert(
+        "Please provide a valid image URL (starting with http://, https://, or / for public folder images)"
+      );
       return;
     }
     if (!projectForm.description.trim()) {
-      alert('Project description is required');
+      alert("Project description is required");
       return;
     }
     if (!projectForm.role.trim()) {
-      alert('Your role is required');
+      alert("Your role is required");
       return;
     }
-    
+
     const projectData = {
       title: projectForm.title.trim(),
       image: projectForm.image.trim(),
       description: projectForm.description.trim(),
-      technologies: projectForm.technologies.split(',').map(tech => tech.trim()).filter(tech => tech.length > 0),
+      technologies: projectForm.technologies
+        .split(",")
+        .map((tech) => tech.trim())
+        .filter((tech) => tech.length > 0),
       role: projectForm.role.trim(),
     };
 
     // URL 필드가 비어있지 않고 유효한 경우에만 추가
-    if (projectForm.github && projectForm.github.trim() && projectForm.github.trim() !== '') {
+    if (
+      projectForm.github &&
+      projectForm.github.trim() &&
+      projectForm.github.trim() !== ""
+    ) {
       const githubUrl = projectForm.github.trim();
-      if (githubUrl.startsWith('http://') || githubUrl.startsWith('https://')) {
+      if (githubUrl.startsWith("http://") || githubUrl.startsWith("https://")) {
         projectData.github = githubUrl;
       } else {
-        alert('Please provide a valid GitHub URL (starting with http:// or https://)');
-        return;
-      }
-    }
-    
-    if (projectForm.liveDemo && projectForm.liveDemo.trim() && projectForm.liveDemo.trim() !== '') {
-      const liveDemoUrl = projectForm.liveDemo.trim();
-      if (liveDemoUrl.startsWith('http://') || liveDemoUrl.startsWith('https://')) {
-        projectData.liveDemo = liveDemoUrl;
-      } else {
-        alert('Please provide a valid Live Demo URL (starting with http:// or https://)');
+        alert("Please provide a valid GitHub URL (starting with http:// or https://)");
         return;
       }
     }
 
-    console.log('Sending project data:', projectData); // 디버그 로그
+    if (
+      projectForm.liveDemo &&
+      projectForm.liveDemo.trim() &&
+      projectForm.liveDemo.trim() !== ""
+    ) {
+      const liveDemoUrl = projectForm.liveDemo.trim();
+      if (liveDemoUrl.startsWith("http://") || liveDemoUrl.startsWith("https://")) {
+        projectData.liveDemo = liveDemoUrl;
+      } else {
+        alert("Please provide a valid Live Demo URL (starting with http:// or https://)");
+        return;
+      }
+    }
+
+    console.log("Sending project data:", projectData); // 디버그 로그
 
     if (editingProject) {
       update({ projectId: editingProject }, { t: currentJwt.token }, projectData).then((data) => {
         if (data && !data.error) {
-          setProjects(projects.map(p => p._id === editingProject ? data : p));
+          setProjects(projects.map((p) => (p._id === editingProject ? data : p)));
           handleClose();
         } else {
-          console.error('Update error:', data);
-          alert('Failed to update project: ' + (data.error || 'Unknown error'));
+          console.error("Update error:", data);
+          alert("Failed to update project: " + (data.error || "Unknown error"));
         }
       });
     } else {
-      console.log('Creating project with JWT:', currentJwt); // 디버그 로그 추가
+      console.log("Creating project with JWT:", currentJwt); // 디버그 로그 추가
       create({ t: currentJwt.token }, projectData).then((data) => {
         if (data && !data.error) {
           list().then((updatedData) => {
@@ -138,8 +156,8 @@ const Projects = () => {
           });
           handleClose();
         } else {
-          console.error('Create error:', data);
-          alert('Failed to create project: ' + (data.error || 'Unknown error'));
+          console.error("Create error:", data);
+          alert("Failed to create project: " + (data.error || "Unknown error"));
         }
       });
     }
@@ -151,7 +169,7 @@ const Projects = () => {
       title: project.title,
       image: project.image,
       description: project.description,
-      technologies: project.technologies.join(', '),
+      technologies: project.technologies.join(", "),
       role: project.role,
       github: project.github || "",
       liveDemo: project.liveDemo || "",
@@ -160,10 +178,10 @@ const Projects = () => {
   };
 
   const handleDelete = (projectId) => {
-    const currentJwt = auth.isAuthenticated(); // 최신 JWT 토큰 가져오기
+    const currentJwt = auth.isAuthenticated();
     remove({ projectId }, { t: currentJwt.token }).then((data) => {
       if (data && !data.error) {
-        setProjects(projects.filter(p => p._id !== projectId));
+        setProjects(projects.filter((p) => p._id !== projectId));
       }
     });
   };
@@ -183,23 +201,20 @@ const Projects = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: "1200px", margin: "auto", mt: 5, px: 3 }}>
-      <Typography
-        variant="h3"
-        sx={{
-          fontWeight: "bold",
-          color: "#3eb93e",
-          mb: 4,
-          textAlign: "center",
-        }}
-      >
+    <Box>
+      <Typography variant="h3" gutterBottom sx={{
+                          fontWeight: "bold",
+                          color: "#3eb93e",
+                          mt: 4,
+                          mb: 4,
+                          textAlign: "center",
+                        }}>
         Projects
       </Typography>
-
-      <Grid container spacing={3}>
+      <Grid container spacing={3} justifyContent="center">
         {projects.map((project) => (
-          <Grid item xs={12} md={6} lg={4} key={project._id}>
-            <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+          <Grid item xs={12} md={6} lg={4} key={project._id} display="flex" justifyContent="center">
+            <Card sx={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", width: "100%", maxWidth: 400 }}>
               <CardMedia
                 component="img"
                 height="200"
