@@ -2,11 +2,11 @@
 # exit on error
 set -o errexit
 
-# Install dependencies
-npm install
+# Install root dependencies with yarn
+yarn
 
-# Install client dependencies and build
+# Install client dependencies and build with yarn
 cd client
-npm install
-npm run build
+yarn
+yarn build
 cd ..

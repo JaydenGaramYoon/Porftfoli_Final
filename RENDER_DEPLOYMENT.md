@@ -1,6 +1,6 @@
-# Render 배포 가이드
+# Render 배포 가이드 (Yarn + Node 21.1.0)
 
-이 문서는 MyPortfolio_Admin 프로젝트를 Render에 배포하는 방법을 설명합니다.
+이 문서는 MyPortfolio_Admin 프로젝트를 Render에 Yarn과 Node.js 21.1.0을 사용하여 배포하는 방법을 설명합니다.
 
 ## 사전 준비사항
 
@@ -14,7 +14,7 @@
 
 ```bash
 git add .
-git commit -m "Prepare for Render deployment"
+git commit -m "Configure for Yarn and Node 21.1.0 deployment"
 git push origin main
 ```
 
@@ -29,13 +29,14 @@ git push origin main
    - **Branch**: `main`
    - **Root Directory**: (비워둠)
    - **Runtime**: `Node`
-   - **Build Command**: `chmod +x build.sh && ./build.sh`
-   - **Start Command**: `npm start`
+   - **Build Command**: `cd client && yarn && yarn build`
+   - **Start Command**: `yarn && node server.js`
 
 ### 3. 환경 변수 설정
 
 Render의 Environment 탭에서 다음 환경 변수들을 설정:
 
+**필수 환경 변수:**
 - `NODE_ENV`: `production`
 - `MONGODB_URI`: `your_mongodb_atlas_connection_string`
 - `JWT_SECRET`: `your_secure_jwt_secret`
@@ -53,33 +54,45 @@ mongodb+srv://username:password@cluster.mongodb.net/myportfolio?retryWrites=true
 
 "Create Web Service" 버튼을 클릭하면 배포가 시작됩니다.
 
+## 주요 변경사항
+
+1. **패키지 매니저**: NPM → Yarn
+2. **Node.js 버전**: 21.1.0 (.nvmrc에 명시)
+3. **빌드 명령어**: `cd client && yarn && yarn build`
+4. **시작 명령어**: `yarn && node server.js`
+
 ## 주의사항
 
-1. **MongoDB 연결**: config/config.js에 있는 하드코딩된 MongoDB URI를 환경 변수로 대체해야 함
-2. **CORS 설정**: 필요에 따라 프로덕션 도메인을 CORS 허용 목록에 추가
-3. **빌드 시간**: 첫 번째 배포는 시간이 걸릴 수 있음 (5-10분)
+1. **Yarn 사용**: 모든 종속성 관리에 Yarn 사용
+2. **Node 21.1.0**: 최신 Node.js 버전 사용
+3. **MongoDB 연결**: 환경 변수로 설정
+4. **빌드 시간**: Yarn이 NPM보다 빠르지만 첫 배포는 5-10분 소요
 
 ## 문제 해결
 
 ### 빌드 실패 시
 - Render의 "Logs" 탭에서 오류 메시지 확인
-- Node.js 버전 호환성 확인 (.nvmrc 파일)
-- 종속성 설치 문제 확인
+- Node.js 21.1.0 버전 호환성 확인
+- Yarn 종속성 설치 문제 확인
 
 ### 런타임 오류 시
 - 환경 변수가 올바르게 설정되었는지 확인
 - MongoDB 연결 문자열 확인
 - 서버 로그에서 오류 메시지 확인
 
-## 유용한 명령어
+## 로컬 테스트
 
-로컬에서 프로덕션 빌드 테스트:
+프로덕션 빌드 테스트:
 ```bash
-npm run build
-npm start
+# 루트에서
+yarn
+
+# 클라이언트 빌드
+cd client
+yarn
+yarn build
+cd ..
+
+# 서버 시작
+node server.js
 ```
-
-## 지원 및 도움말
-
-- [Render 문서](https://render.com/docs)
-- [Node.js on Render](https://render.com/docs/deploy-node-express-app)

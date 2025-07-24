@@ -13,12 +13,12 @@
     "nodemon": "^3.1.10"
   },
   "scripts": {
-    "dev": "concurrently \"cd client && npm run dev\" \"nodemon server.js\"",
-    "development": "concurrently \"cd client && npm run dev\" \"nodemon server.js\"",
-    "build": "cd client && npm install && npm run build",
+    "dev": "concurrently \"cd client && yarn dev\" \"nodemon server.js\"",
+    "development": "concurrently \"cd client && yarn dev\" \"nodemon server.js\"",
+    "build": "cd client && yarn && yarn build",
     "start": "node server.js",
-    "install-client": "cd client && npm install",
-    "heroku-postbuild": "npm run install-client && npm run build",
+    "install-client": "cd client && yarn",
+    "heroku-postbuild": "yarn install-client && yarn build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
