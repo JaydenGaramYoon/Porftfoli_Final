@@ -17,6 +17,16 @@ mongoose.connection.on("error", () => {
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to User application." });
 });
+
+// Health check endpoint for Render
+app.get("/health", (req, res) => {
+  res.status(200).json({ 
+    status: "OK", 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
+  });
+});
+
 app.listen(config.port, (err) => {
   if (err) {
     console.log(err);

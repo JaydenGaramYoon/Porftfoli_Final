@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import compress from "compression";
 import cors from "cors";
 import helmet from "helmet";
+import path from "path";
+import { fileURLToPath } from "url";
 import userRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import contactRoutes from "./routes/contact.routes.js";
@@ -13,6 +15,9 @@ import servicesRoutes from "./routes/services.routes.js";
 import educationRoutes from "./routes/education.routes.js";
 import certificateRoutes from "./routes/certificate.routes.js";
 import skillRoutes from "./routes/skill.routes.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 
@@ -34,6 +39,17 @@ app.use(cookieParser());
 app.use(compress());
 app.use(helmet());
 app.use(cors());
+
+// Serve static files from the React app build directory
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+  
+  // Handle React routing, return all requests to React app
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+  });
+}
+
 app.use((err, req, res, next) => {
   if (err.name === "UnauthorizedError") {
     res.status(401).json({ error: err.name + ": " + err.message });

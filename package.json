@@ -15,7 +15,10 @@
   "scripts": {
     "dev": "concurrently \"cd client && npm run dev\" \"nodemon server.js\"",
     "development": "concurrently \"cd client && npm run dev\" \"nodemon server.js\"",
-    "build": "vite build",
+    "build": "cd client && npm install && npm run build",
+    "start": "node server.js",
+    "install-client": "cd client && npm install",
+    "heroku-postbuild": "npm run install-client && npm run build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
