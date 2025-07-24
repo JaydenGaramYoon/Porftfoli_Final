@@ -183,7 +183,7 @@ const Home = () => {
               },
             }}
           >
-            Resume
+            Resume<br /> "Added CI/CD test paragraph"
           </Typography>
         </Box>
       </Card>
