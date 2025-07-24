@@ -21,6 +21,10 @@ const __dirname = path.dirname(__filename);
 
 
 
+
+
+
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -40,15 +44,12 @@ app.use(compress());
 app.use(helmet());
 app.use(cors());
 
-// Serve static files from the React app build directory
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
-  
-  // Handle React routing, return all requests to React app
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
-  });
-}
+// Serve static files from the React app build directory (dist/app)
+app.use(express.static(path.join(__dirname, '../client/dist/app')));
+// Handle React routing, return all requests to React app
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/app', 'index.html'));
+});
 
 app.use((err, req, res, next) => {
   if (err.name === "UnauthorizedError") {
