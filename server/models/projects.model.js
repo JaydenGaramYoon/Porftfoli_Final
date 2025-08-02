@@ -43,9 +43,29 @@ const ProjectSchema = new mongoose.Schema({
         trim: true,
         validate: {
             validator: function(v) {
-                // 빈 문자열이거나 null/undefined인 경우 검증 통과
                 if (!v || v.trim() === '') return true;
-                // 값이 있는 경우에만 URL 형식 검증
+                return /^https?:\/\/.+/.test(v);
+            },
+            message: 'Please provide a valid URL'
+        }
+    },
+    problemLog: {
+        type: String,
+        trim: true,
+        validate: {
+            validator: function(v) {
+                if (!v || v.trim() === '') return true;
+                return /^https?:\/\/.+/.test(v);
+            },
+            message: 'Please provide a valid URL'
+        }
+    },
+    testingLog: {
+        type: String,
+        trim: true,
+        validate: {
+            validator: function(v) {
+                if (!v || v.trim() === '') return true;
                 return /^https?:\/\/.+/.test(v);
             },
             message: 'Please provide a valid URL'

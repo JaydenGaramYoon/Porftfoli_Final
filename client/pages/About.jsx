@@ -209,6 +209,78 @@ const About = () => {
       </Typography>
 
       <Grid container spacing={4}>
+        {/* Skills Section (moved to top) */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3, width: "1400px" }}>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <BuildIcon sx={{ color: "#3eb93e", mr: 2, fontSize: 30 }} />
+                <Typography variant="h4" sx={{ fontWeight: "bold", color: "#3eb93e" }}>
+                  Skills
+                </Typography>
+              </Box>
+              {isAdmin && (
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => handleAdd('skill')}
+                  sx={{ backgroundColor: "#3eb93e", marginRight: 40 }}
+                >
+                  Add Skill
+                </Button>
+              )}
+            </Box>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3, justifyContent: "center" }}>
+              {skills.map((skill, index) => (
+                <Box key={index} sx={{ position: "relative", display: "inline-block" }}>
+                  <Chip
+                    label={skill.name}
+                    sx={{
+                      backgroundColor: "#3eb93e",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#2a8a2a",
+                      },
+                      pr: isAdmin ? 6 : 2,
+                    }}
+                  />
+                  {isAdmin && (
+                    <Box sx={{ position: "absolute", top: 0, right: 0, display: "flex" }}>
+                      <IconButton 
+                        size="small" 
+                        onClick={() => handleEdit('skill', skill)}
+                        sx={{ 
+                          color: "white", 
+                          padding: "2px",
+                          "&:hover": { backgroundColor: "rgba(255,255,255,0.2)" }
+                        }}
+                      >
+                        <EditIcon sx={{ fontSize: 12 }} />
+                      </IconButton>
+                      <IconButton 
+                        size="small" 
+                        onClick={() => handleDelete('skill', skill._id)}
+                        sx={{ 
+                          color: "white", 
+                          padding: "2px",
+                          "&:hover": { backgroundColor: "rgba(255,0,0,0.3)" }
+                        }}
+                      >
+                        <DeleteIcon sx={{ fontSize: 12 }} />
+                      </IconButton>
+                    </Box>
+                  )}
+                </Box>
+              ))}
+            </Box>
+            {skills.length === 0 && (
+              <Typography variant="body1" color="text.secondary" textAlign="center">
+                No skills available.
+              </Typography>
+            )}
+          </Paper>
+        </Grid>
+
         {/* Education Section */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
@@ -328,78 +400,6 @@ const About = () => {
             )}
           </Paper>
         </Grid>
-
-        {/* Skills Section */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3, width: "1400px" }}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <BuildIcon sx={{ color: "#3eb93e", mr: 2, fontSize: 30 }} />
-                <Typography variant="h4" sx={{ fontWeight: "bold", color: "#3eb93e" }}>
-                  Skills
-                </Typography>
-              </Box>
-              {isAdmin && (
-                <Button
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                  onClick={() => handleAdd('skill')}
-                  sx={{ backgroundColor: "#3eb93e", marginRight: 40 }}
-                >
-                  Add Skill
-                </Button>
-              )}
-            </Box>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3, justifyContent: "center" }}>
-              {skills.map((skill, index) => (
-                <Box key={index} sx={{ position: "relative", display: "inline-block" }}>
-                  <Chip
-                    label={skill.name}
-                    sx={{
-                      backgroundColor: "#3eb93e",
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "#2a8a2a",
-                      },
-                      pr: isAdmin ? 6 : 2,
-                    }}
-                  />
-                  {isAdmin && (
-                    <Box sx={{ position: "absolute", top: 0, right: 0, display: "flex" }}>
-                      <IconButton 
-                        size="small" 
-                        onClick={() => handleEdit('skill', skill)}
-                        sx={{ 
-                          color: "white", 
-                          padding: "2px",
-                          "&:hover": { backgroundColor: "rgba(255,255,255,0.2)" }
-                        }}
-                      >
-                        <EditIcon sx={{ fontSize: 12 }} />
-                      </IconButton>
-                      <IconButton 
-                        size="small" 
-                        onClick={() => handleDelete('skill', skill._id)}
-                        sx={{ 
-                          color: "white", 
-                          padding: "2px",
-                          "&:hover": { backgroundColor: "rgba(255,0,0,0.3)" }
-                        }}
-                      >
-                        <DeleteIcon sx={{ fontSize: 12 }} />
-                      </IconButton>
-                    </Box>
-                  )}
-                </Box>
-              ))}
-            </Box>
-            {skills.length === 0 && (
-              <Typography variant="body1" color="text.secondary" textAlign="center">
-                No skills available.
-              </Typography>
-            )}
-          </Paper>
-        </Grid>
       </Grid>
 
       {/* Dialog for Add/Edit */}
@@ -440,6 +440,18 @@ const About = () => {
               />
             </>
           )}
+          {dialogType === 'skill' && (
+            <TextField
+              autoFocus
+              margin="dense"
+              name="name"
+              label="Skill Name"
+              fullWidth
+              variant="outlined"
+              value={formData.name || ''}
+              onChange={handleFormChange}
+            />
+          )}
           {dialogType === 'certificate' && (
             <>
               <TextField
@@ -472,18 +484,6 @@ const About = () => {
                 onChange={handleFormChange}
               />
             </>
-          )}
-          {dialogType === 'skill' && (
-            <TextField
-              autoFocus
-              margin="dense"
-              name="name"
-              label="Skill Name"
-              fullWidth
-              variant="outlined"
-              value={formData.name || ''}
-              onChange={handleFormChange}
-            />
           )}
         </DialogContent>
         <DialogActions>
