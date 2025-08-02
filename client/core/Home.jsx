@@ -185,18 +185,6 @@ const Home = () => {
           >
             Resume
           </Typography>
-          { /* Add a paragraph for CI/CD test */}
-          <Typography
-            variant="body2"
-            sx={{
-              fontSize: "1rem",
-              color: "#d32f2f",
-              fontWeight: "bold",
-              mt: 1,
-            }}
-          >
-            Added CI/CD test paragraph
-          </Typography>
         </Box>
       </Card>
     </Box>
