@@ -36,6 +36,8 @@ const Projects = () => {
     role: "",
     github: "",
     liveDemo: "",
+    problemLog: "",
+    testingLog: "",
   });
   // jwt 변수 제거 - 필요할 때마다 동적으로 가져오기
 
@@ -102,6 +104,8 @@ const Projects = () => {
         .map((tech) => tech.trim())
         .filter((tech) => tech.length > 0),
       role: projectForm.role.trim(),
+      problemLog: projectForm.problemLog.trim(),
+      testingLog: projectForm.testingLog.trim(),
     };
 
     // URL 필드가 비어있지 않고 유효한 경우에만 추가
@@ -173,6 +177,8 @@ const Projects = () => {
       role: project.role,
       github: project.github || "",
       liveDemo: project.liveDemo || "",
+      problemLog: project.problemLog || "",
+      testingLog: project.testingLog || "",
     });
     setOpen(true);
   };
@@ -197,6 +203,8 @@ const Projects = () => {
       role: "",
       github: "",
       liveDemo: "",
+      problemLog: "",
+      testingLog: "",
     });
   };
 
@@ -260,6 +268,26 @@ const Projects = () => {
                       target="_blank"
                     >
                       Live Demo
+                    </Button>
+                  )}
+                  {project.problemLog && (
+                    <Button
+                      size="small"
+                      startIcon={<LaunchIcon />}
+                      href={project.problemLog}
+                      target="_blank"
+                    >
+                      Dev Log
+                    </Button>
+                  )}
+                  {project.testingLog && (
+                    <Button
+                      size="small"
+                      startIcon={<LaunchIcon />}
+                      href={project.testingLog}
+                      target="_blank"
+                    >
+                      Test Report
                     </Button>
                   )}
                 </Box>
@@ -382,6 +410,24 @@ const Projects = () => {
             fullWidth
             variant="outlined"
             value={projectForm.liveDemo}
+            onChange={handleFormChange}
+          />
+          <TextField
+            margin="dense"
+            name="problemLog"
+            label="Problem&Solution Log URL"
+            fullWidth
+            variant="outlined"
+            value={projectForm.problemLog}
+            onChange={handleFormChange}
+          />
+          <TextField
+            margin="dense"
+            name="testingLog"
+            label="Testing Log URL"
+            fullWidth
+            variant="outlined"
+            value={projectForm.testingLog}
             onChange={handleFormChange}
           />
         </DialogContent>

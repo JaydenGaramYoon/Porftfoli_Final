@@ -29,7 +29,7 @@ const create = async (req, res) => {
 const list = async (req, res) => {
     try {
         const projects = await Project.find()
-            .select('title image description technologies role github liveDemo created updated')
+            .select('title image description technologies role github liveDemo problemLog testingLog created updated')
             .sort({ created: -1 }); // 최신순 정렬
         res.json(projects);
     } catch (err) {
